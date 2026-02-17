@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SE Daily Command Center</title>
+    <link rel="stylesheet" href="/static/css/dashboard.css" />
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <script defer src="/static/js/dashboard.js"></script>
+  </head>
+  <body>
+    <header class="hero">
+      <div>
+        <h1>SE Daily Command Center</h1>
+        <p>One context view for your day: priorities, schedule, inbound asks, and action execution.</p>
+      </div>
+    </header>
+
+    <section
+      id="top-strip"
+      hx-get="/partials/top-strip"
+      hx-trigger="load, refresh from:body, every 20s"
+    ></section>
+
+    <main class="layout">
+      <section
+        id="board"
+        class="panel"
+        hx-get="/partials/board"
+        hx-trigger="load, refresh from:body, every 30s"
+      ></section>
+      <aside
+        id="panels"
+        class="panel"
+        hx-get="/partials/panels"
+        hx-trigger="load, refresh from:body, every 30s"
+      ></aside>
+    </main>
+
+    <section
+      id="runs"
+      class="panel runs"
+      hx-get="/partials/runs"
+      hx-trigger="load, every 15s"
+    ></section>
+  </body>
+</html>

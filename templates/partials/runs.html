@@ -1,0 +1,51 @@
+<h2>Run History</h2>
+<div class="runs-grid">
+  <section>
+    <h3>Action Runs</h3>
+    <ul class="run-list">
+      {% for run in action_runs %}
+        <li class="run-card">
+          <div class="task-head">
+            <strong>{{ run.action_type }}</strong>
+            <span class="badge">{{ run.status }}</span>
+          </div>
+          <p class="meta">Run ID: {{ run.run_id }} · Started: {{ run.started_at.isoformat() }}</p>
+          {% if run.result_payload.get("headline") %}
+            <p><strong>{{ run.result_payload.get("headline") }}</strong></p>
+          {% endif %}
+          {% if run.result_payload.get("draft") %}
+            <p>{{ run.result_payload.get("draft") }}</p>
+          {% endif %}
+          {% if run.error %}
+            <p class="error">{{ run.error }}</p>
+          {% endif %}
+        </li>
+      {% else %}
+        <li class="empty">No action runs yet.</li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section>
+    <h3>Skill Runs</h3>
+    <ul class="run-list">
+      {% for run in skill_runs %}
+        <li class="run-card">
+          <div class="task-head">
+            <strong>{{ run.skill_name }}</strong>
+            <span class="badge">{{ run.status }}</span>
+          </div>
+          <p class="meta">Run ID: {{ run.run_id }} · Started: {{ run.started_at.isoformat() }}</p>
+          {% if run.output_payload.get("output") %}
+            <p>{{ run.output_payload.get("output")[:400] }}{% if run.output_payload.get("output")|length > 400 %}...{% endif %}</p>
+          {% endif %}
+          {% if run.error %}
+            <p class="error">{{ run.error }}</p>
+          {% endif %}
+        </li>
+      {% else %}
+        <li class="empty">No skill runs yet.</li>
+      {% endfor %}
+    </ul>
+  </section>
+</div>

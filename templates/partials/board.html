@@ -1,0 +1,67 @@
+<h2>Today’s Priority Board</h2>
+<div class="task-sections">
+  {% for bucket in ["now", "next", "later"] %}
+    <section class="task-section">
+      <div class="section-head">
+        <h3 class="bucket-title bucket-{{ bucket }}">{{ bucket|upper }}</h3>
+        <span class="counter">{{ tasks_grouped.get(bucket, [])|length }} tasks</span>
+      </div>
+      {% set items = tasks_grouped.get(bucket, []) %}
+      {% if items %}
+        <ul class="task-list rows">
+          {% for task in items %}
+            <li class="task-card row">
+              <div class="task-main">
+                <div class="task-head">
+                  <strong>{{ task.title }}</strong>
+                  <span class="badge source">{{ task.source }}</span>
+                </div>
+                <p class="action-hint">{{ task.action_hint }}</p>
+                <p class="meta">
+                  Status: <span class="pill">{{ task.status }}</span>
+                  {% if task.due_at %} · Due: {{ task.due_at.isoformat() }}{% endif %}
+                </p>
+                {% if task.metadata.get("snippet") %}
+                  <p class="snippet">{{ task.metadata.get("snippet") }}</p>
+                {% endif %}
+              </div>
+
+              <div class="task-actions">
+                <div class="task-controls">
+                  <form hx-post="/ui/tasks/{{ task.id }}/status" hx-swap="none">
+                    <input type="hidden" name="status" value="in_progress" />
+                    <button class="btn btn-sm" type="submit">Start</button>
+                  </form>
+                  <form hx-post="/ui/tasks/{{ task.id }}/status" hx-swap="none">
+                    <input type="hidden" name="status" value="snoozed" />
+                    <button class="btn btn-sm" type="submit">Snooze</button>
+                  </form>
+                  <form hx-post="/ui/tasks/{{ task.id }}/status" hx-swap="none">
+                    <input type="hidden" name="status" value="done" />
+                    <button class="btn btn-sm btn-success" type="submit">Done</button>
+                  </form>
+                  {% if task.url %}
+                    <a class="btn btn-sm btn-link" href="{{ task.url }}" target="_blank" rel="noopener noreferrer">Open</a>
+                  {% endif %}
+                </div>
+
+                <form class="action-form" hx-post="/ui/actions/run" hx-swap="none">
+                  <input type="hidden" name="task_id" value="{{ task.id }}" />
+                  <select name="action_type">
+                    {% for action_key, action_label in action_types.items() %}
+                      <option value="{{ action_key }}">{{ action_label }}</option>
+                    {% endfor %}
+                  </select>
+                  <input type="text" name="context" placeholder="Optional context..." />
+                  <button class="btn btn-sm btn-primary" type="submit">Run</button>
+                </form>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="empty">No tasks in {{ bucket }}.</p>
+      {% endif %}
+    </section>
+  {% endfor %}
+</div>

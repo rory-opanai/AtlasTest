@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [
+    "slack_results",
+    "calendar_events",
+    "gmail_emails",
+    "diagnostics"
+  ],
+  "properties": {
+    "slack_results": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "calendar_events": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "gmail_emails": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "diagnostics": {
+      "type": "object",
+      "properties": {
+        "tool_access": {
+          "type": "object",
+          "properties": {
+            "slack": {
+              "type": "string"
+            },
+            "calendar": {
+              "type": "string"
+            },
+            "gmail": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "slack",
+            "calendar",
+            "gmail"
+          ],
+          "additionalProperties": true
+        },
+        "query_windows": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "tool_access",
+        "errors"
+      ],
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,148 @@
+<div class="panel-stack">
+  {% set slack_health = (source_health | selectattr("source", "equalto", "slack") | list | first) %}
+  {% set gmail_health = (source_health | selectattr("source", "equalto", "gmail") | list | first) %}
+  {% set calendar_health = (source_health | selectattr("source", "equalto", "calendar") | list | first) %}
+
+  <section class="subpanel">
+    <h3>Source Ingestion Health</h3>
+    <table class="health-table">
+      <thead>
+        <tr>
+          <th>Source</th>
+          <th>Raw Fetched</th>
+          <th>Actionable</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in source_health %}
+          <tr>
+            <td><strong>{{ row.source }}</strong></td>
+            <td>{{ row.raw_count }}</td>
+            <td>{{ row.actionable_count }}</td>
+            <td>{{ row.status }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% if snapshot %}
+      <p class="meta">Fetch mode: {{ snapshot_metadata.get("fetch_mode", "unknown") }}</p>
+      {% set diagnostics = snapshot_metadata.get("diagnostics", {}) %}
+      {% if diagnostics %}
+        {% set tool_access = diagnostics.get("tool_access", {}) %}
+        {% set errors = diagnostics.get("errors", []) %}
+        {% if tool_access %}
+          <p class="meta">
+            Tool access:
+            slack={{ tool_access.get("slack", "unknown") }},
+            calendar={{ tool_access.get("calendar", "unknown") }},
+            gmail={{ tool_access.get("gmail", "unknown") }}
+          </p>
+        {% endif %}
+        {% if errors %}
+          <ul class="source-list">
+            {% for err in errors %}
+              <li class="empty">{{ err }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endif %}
+    {% endif %}
+  </section>
+
+  <section class="subpanel">
+    <h3>Manual Quick-Add</h3>
+    <form class="manual-form" hx-post="/ui/tasks/manual" hx-swap="none">
+      <input type="text" name="title" placeholder="Task title" required />
+      <input type="text" name="action_hint" placeholder="Action hint" />
+      <input type="date" name="due_at" />
+      <select name="priority_bucket">
+        <option value="now">Now</option>
+        <option value="next" selected>Next</option>
+        <option value="later">Later</option>
+      </select>
+      <button class="btn btn-primary" type="submit">Add Task</button>
+    </form>
+  </section>
+
+  <section class="subpanel">
+    <h3>Action Rail</h3>
+    <div class="rail-grid">
+      {% for action_key, action_label in action_types.items() %}
+        <form hx-post="/ui/actions/run" hx-swap="none">
+          <input type="hidden" name="action_type" value="{{ action_key }}" />
+          <input type="hidden" name="task_id" value="" />
+          <input type="text" name="context" placeholder="Optional context..." />
+          <button class="btn btn-secondary" type="submit">{{ action_label }}</button>
+        </form>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="subpanel">
+    <h3>Skill Rail</h3>
+    <div class="rail-grid">
+      {% for skill in allowlisted_skills %}
+        <form hx-post="/ui/skills/run" hx-swap="none">
+          <input type="hidden" name="skill_name" value="{{ skill }}" />
+          <input type="text" name="context" placeholder="Optional context..." />
+          <button class="btn btn-secondary" type="submit">Run {{ skill }}</button>
+        </form>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="subpanel">
+    <h3>Calendar Timeline (24h)</h3>
+    <ul class="source-list">
+      {% for item in panels.calendar %}
+        <li>
+          <strong>{{ item.title }}</strong>
+          <span>{{ item.timestamp.isoformat() }}</span>
+        </li>
+      {% else %}
+        {% if calendar_health and calendar_health.raw_count > 0 %}
+          <li class="empty">No actionable calendar prep items ({{ calendar_health.raw_count }} fetched).</li>
+        {% else %}
+          <li class="empty">No calendar items.</li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section class="subpanel">
+    <h3>Inbox Watchlist (Gmail)</h3>
+    <ul class="source-list">
+      {% for item in panels.gmail %}
+        <li>
+          <strong>{{ item.title }}</strong>
+          <p>{{ item.snippet }}</p>
+        </li>
+      {% else %}
+        {% if gmail_health and gmail_health.raw_count > 0 %}
+          <li class="empty">No actionable inbox items after ranking ({{ gmail_health.raw_count }} fetched).</li>
+        {% else %}
+          <li class="empty">No inbox watchlist items.</li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section class="subpanel">
+    <h3>Slack Escalations / Watchlist</h3>
+    <ul class="source-list">
+      {% for item in panels.slack %}
+        <li>
+          <strong>{{ item.title }}</strong>
+          <p>{{ item.snippet }}</p>
+        </li>
+      {% else %}
+        {% if slack_health and slack_health.raw_count > 0 %}
+          <li class="empty">No actionable Slack escalations ({{ slack_health.raw_count }} fetched, filtered by ranking).</li>
+        {% else %}
+          <li class="empty">No Slack watchlist items.</li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </section>
+</div>

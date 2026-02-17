@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: se-daily-command-center
+    runtime: python
+    plan: free
+    region: oregon
+    buildCommand: pip install -r requirements.txt
+    startCommand: PYTHONPATH=src uvicorn daily_flight_deck.dashboard_app:app --host 0.0.0.0 --port $PORT
+    autoDeploy: true
+    healthCheckPath: /
+    envVars:
+      - key: OPENAI_MODEL
+        value: gpt-4.1-mini
+      - key: FLIGHT_DECK_DB_PATH
+        value: data/flight_deck.db
+      - key: FLIGHT_DECK_SNAPSHOT_PATH
+        value: data/latest_snapshot.json
+      - key: OPENAI_API_KEY
+        sync: false

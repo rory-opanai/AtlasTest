@@ -1,0 +1,20 @@
+{
+  "events": [
+    {
+      "id": "evt-1",
+      "summary": "Customer Escalation Prep",
+      "start": "2026-02-16T08:00:00+00:00",
+      "end": "2026-02-16T08:30:00+00:00",
+      "description": "Prep notes for escalation call.",
+      "display_url": "https://calendar.example/event/1"
+    },
+    {
+      "id": "evt-2",
+      "summary": "Weekly Team Sync",
+      "start": "2026-02-16T09:15:00+00:00",
+      "end": "2026-02-16T10:00:00+00:00",
+      "description": "",
+      "display_url": "https://calendar.example/event/2"
+    }
+  ]
+}

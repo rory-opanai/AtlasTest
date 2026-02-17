@@ -1,0 +1,24 @@
+{
+  "emails": [
+    {
+      "id": "mail-1",
+      "from_": "Manager <manager@example.com>",
+      "subject": "Can you send customer update before 9?",
+      "snippet": "Please send the customer update and include the blocker status.",
+      "email_ts": "2026-02-16T06:15:00+00:00",
+      "labels": ["INBOX", "IMPORTANT"],
+      "display_url": "https://mail.example/mail-1",
+      "has_attachment": false
+    },
+    {
+      "id": "mail-2",
+      "from_": "Newsletters <promo@example.com>",
+      "subject": "Bonus credit and promotion",
+      "snippet": "Special reactivation bonus available now.",
+      "email_ts": "2026-02-16T05:10:00+00:00",
+      "labels": ["INBOX", "CATEGORY_PROMOTIONS"],
+      "display_url": "https://mail.example/mail-2",
+      "has_attachment": false
+    }
+  ]
+}

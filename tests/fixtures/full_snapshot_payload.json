@@ -1,0 +1,59 @@
+{
+  "slack_results": [
+    {
+      "channel_name": "codex-app-feedback",
+      "text": "Rory, can you review this urgent escalation before standup?",
+      "message_ts": "2026-02-16T06:45:00+00:00",
+      "display_url": "https://slack.example/codex-app-feedback/1",
+      "message_info_str": "{\"channel_id\":\"C1\",\"message_ts\":\"1771233900.000100\"}",
+      "author_display_name": "Alice"
+    },
+    {
+      "channel_name": "tmp-gpt5-api-deployment-ops",
+      "text": "Need action: deployment checklist still pending?",
+      "message_ts": "2026-02-16T06:30:00+00:00",
+      "display_url": "https://slack.example/tmp/2",
+      "message_info_str": "{\"channel_id\":\"C2\",\"message_ts\":\"1771233000.000200\"}"
+    }
+  ],
+  "calendar_events": [
+    {
+      "id": "evt-1",
+      "summary": "Customer Escalation Prep",
+      "start": "2026-02-16T08:00:00+00:00",
+      "end": "2026-02-16T08:30:00+00:00",
+      "description": "Prep notes for escalation call.",
+      "display_url": "https://calendar.example/event/1"
+    },
+    {
+      "id": "evt-2",
+      "summary": "Weekly Team Sync",
+      "start": "2026-02-16T09:15:00+00:00",
+      "end": "2026-02-16T10:00:00+00:00",
+      "description": "",
+      "display_url": "https://calendar.example/event/2"
+    }
+  ],
+  "gmail_emails": [
+    {
+      "id": "mail-1",
+      "from_": "Manager <manager@example.com>",
+      "subject": "Can you send customer update before 9?",
+      "snippet": "Please send the customer update and include the blocker status.",
+      "email_ts": "2026-02-16T06:15:00+00:00",
+      "labels": ["INBOX", "IMPORTANT"],
+      "display_url": "https://mail.example/mail-1",
+      "has_attachment": false
+    },
+    {
+      "id": "mail-2",
+      "from_": "Newsletters <promo@example.com>",
+      "subject": "Bonus credit and promotion",
+      "snippet": "Special reactivation bonus available now.",
+      "email_ts": "2026-02-16T05:10:00+00:00",
+      "labels": ["INBOX", "CATEGORY_PROMOTIONS"],
+      "display_url": "https://mail.example/mail-2",
+      "has_attachment": false
+    }
+  ]
+}

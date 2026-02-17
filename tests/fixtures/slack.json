@@ -1,0 +1,26 @@
+{
+  "results": [
+    {
+      "channel_name": "codex-app-feedback",
+      "text": "Rory, can you review this urgent escalation before standup?",
+      "message_ts": "2026-02-16T06:45:00+00:00",
+      "display_url": "https://slack.example/codex-app-feedback/1",
+      "message_info_str": "{\"channel_id\":\"C1\",\"message_ts\":\"1771233900.000100\"}",
+      "author_display_name": "Alice"
+    },
+    {
+      "channel_name": "tmp-gpt5-api-deployment-ops",
+      "text": "Need action: deployment checklist still pending?",
+      "message_ts": "2026-02-16T06:30:00+00:00",
+      "display_url": "https://slack.example/tmp/2",
+      "message_info_str": "{\"channel_id\":\"C2\",\"message_ts\":\"1771233000.000200\"}"
+    },
+    {
+      "channel_name": "random-channel",
+      "text": "This should be excluded",
+      "message_ts": "2026-02-16T06:20:00+00:00",
+      "display_url": "https://slack.example/random/3",
+      "message_info_str": "{\"channel_id\":\"C3\",\"message_ts\":\"1771232400.000300\"}"
+    }
+  ]
+}
