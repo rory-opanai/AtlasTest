@@ -6,7 +6,7 @@ from pathlib import Path
 
 from daily_flight_deck.brief import render_brief
 from daily_flight_deck.config import load_config
-from daily_flight_deck.normalizers import normalize_all
+from daily_flight_deck.normalizers import normalize_all, slack_raw_channel_stats
 from daily_flight_deck.scoring import score_and_sort
 
 
@@ -27,8 +27,17 @@ def _load_fixture(name: str) -> list[dict]:
 def test_channel_scope_supports_exact_and_prefix() -> None:
     config = load_config(ROOT / "config" / "daily_flight_deck.yaml")
     assert config.slack.is_in_scope("codex-app-feedback")
+    assert config.slack.is_in_scope("#codex-app-feedback")
     assert config.slack.is_in_scope("tmp-gpt5-api-deployment-ops")
     assert not config.slack.is_in_scope("random-channel")
+
+
+def test_slack_channel_stats_count_in_scope_rows() -> None:
+    config = load_config(ROOT / "config" / "daily_flight_deck.yaml")
+    stats = slack_raw_channel_stats(_load_fixture("slack.json"), config)
+    assert stats["in_scope_count"] >= 2
+    top_channels = [item["channel"] for item in stats["top_channels"]]
+    assert "codex-app-feedback" in top_channels
 
 
 def test_weighted_scoring_applies_required_rules() -> None:

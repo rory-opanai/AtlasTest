@@ -48,7 +48,8 @@ def create_app(
         start_worker=start_workers,
     )
 
-    templates = Jinja2Templates(directory=str(project_root / "templates"))
+    templates_dir = project_root / "templates"
+    templates = Jinja2Templates(directory=str(templates_dir))
     context = DashboardContext(
         config=config,
         storage=storage,
@@ -65,7 +66,7 @@ def create_app(
         skill_runner.shutdown()
 
     app = FastAPI(title="SE Daily Command Center", version="0.1.0", lifespan=lifespan)
-    app.mount("/static", StaticFiles(directory=str(project_root / "static")), name="static")
+    app.mount("/static", StaticFiles(directory=str(project_root / "static"), check_dir=False), name="static")
     app.include_router(build_router(context))
     app.state.dashboard_context = context
 

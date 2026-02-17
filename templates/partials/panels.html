@@ -10,6 +10,7 @@
         <tr>
           <th>Source</th>
           <th>Raw Fetched</th>
+          <th>In Scope</th>
           <th>Actionable</th>
           <th>Status</th>
         </tr>
@@ -19,6 +20,7 @@
           <tr>
             <td><strong>{{ row.source }}</strong></td>
             <td>{{ row.raw_count }}</td>
+            <td>{{ row.in_scope_raw_count }}</td>
             <td>{{ row.actionable_count }}</td>
             <td>{{ row.status }}</td>
           </tr>
@@ -46,6 +48,16 @@
             {% endfor %}
           </ul>
         {% endif %}
+      {% endif %}
+      {% set slack_stats = snapshot_metadata.get("slack_channel_stats", {}) %}
+      {% set top_channels = slack_stats.get("top_channels", []) %}
+      {% if top_channels %}
+        <p class="meta">Top Slack channels returned by connector:</p>
+        <div class="chip-list">
+          {% for item in top_channels %}
+            <span class="chip">{{ item.channel }} ({{ item.count }})</span>
+          {% endfor %}
+        </div>
       {% endif %}
     {% endif %}
   </section>

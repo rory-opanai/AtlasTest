@@ -12,10 +12,20 @@ class SlackConfig:
     channels_exact: tuple[str, ...]
     channels_prefix: tuple[str, ...]
 
+    @staticmethod
+    def normalize_channel_name(channel_name: str) -> str:
+        text = (channel_name or "").strip().lower()
+        if text.startswith("#"):
+            text = text[1:]
+        return text
+
     def is_in_scope(self, channel_name: str) -> bool:
-        if channel_name in self.channels_exact:
+        normalized = self.normalize_channel_name(channel_name)
+        exact = {self.normalize_channel_name(item) for item in self.channels_exact}
+        prefixes = tuple(self.normalize_channel_name(item) for item in self.channels_prefix)
+        if normalized in exact:
             return True
-        return any(channel_name.startswith(prefix) for prefix in self.channels_prefix)
+        return any(normalized.startswith(prefix) for prefix in prefixes)
 
 
 @dataclass(frozen=True)
@@ -82,6 +92,8 @@ class FlightDeckConfig:
             "gh-fix-ci",
             "gh-address-comments",
             "incident-report-generator",
+            "command-center-integration-audit",
+            "command-center-task-ops",
         )
 
         return FlightDeckConfig(

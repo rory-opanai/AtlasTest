@@ -9,39 +9,41 @@
     <script defer src="/static/js/dashboard.js"></script>
   </head>
   <body>
-    <header class="hero">
-      <div>
-        <h1>SE Daily Command Center</h1>
-        <p>One context view for your day: priorities, schedule, inbound asks, and action execution.</p>
-      </div>
-    </header>
+    <div class="shell">
+      <header class="hero">
+        <div>
+          <h1>SE Daily Command Center</h1>
+          <p>One context view for priorities, schedule, inbound asks, and one-click execution.</p>
+        </div>
+      </header>
 
-    <section
-      id="top-strip"
-      hx-get="/partials/top-strip"
-      hx-trigger="load, refresh from:body, every 20s"
-    ></section>
-
-    <main class="layout">
       <section
-        id="board"
-        class="panel"
-        hx-get="/partials/board"
-        hx-trigger="load, refresh from:body, every 30s"
+        id="top-strip"
+        hx-get="/partials/top-strip"
+        hx-trigger="load, refresh from:body, every 20s"
       ></section>
-      <aside
-        id="panels"
-        class="panel"
-        hx-get="/partials/panels"
-        hx-trigger="load, refresh from:body, every 30s"
-      ></aside>
-    </main>
 
-    <section
-      id="runs"
-      class="panel runs"
-      hx-get="/partials/runs"
-      hx-trigger="load, every 15s"
-    ></section>
+      <main class="layout">
+        <section
+          id="board"
+          class="panel"
+          hx-get="/partials/board"
+          hx-trigger="load, refresh from:body, every 30s"
+        ></section>
+        <aside
+          id="panels"
+          class="panel"
+          hx-get="/partials/panels"
+          hx-trigger="load, refresh from:body, every 30s"
+        ></aside>
+      </main>
+
+      <section
+        id="runs"
+        class="panel runs"
+        hx-get="/partials/runs"
+        hx-trigger="load, every 15s"
+      ></section>
+    </div>
   </body>
 </html>

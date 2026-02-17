@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections import Counter
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
@@ -39,6 +40,42 @@ def _snippet(text: str, limit: int = 200) -> str:
     return f"{trimmed[:limit - 3]}..."
 
 
+def _extract_slack_channel(result: dict[str, Any]) -> str:
+    channel = str(result.get("channel_name") or "").strip()
+    if channel:
+        return channel
+    display_title = str(result.get("display_title") or "").strip()
+    if display_title.startswith("#"):
+        return display_title[1:]
+    return ""
+
+
+def slack_raw_channel_stats(
+    results: list[dict[str, Any]],
+    config: FlightDeckConfig,
+    *,
+    top_n: int = 12,
+) -> dict[str, Any]:
+    counts: Counter[str] = Counter()
+    in_scope = 0
+    unknown = 0
+    for row in results:
+        channel = _extract_slack_channel(row)
+        if not channel:
+            unknown += 1
+            continue
+        normalized = config.slack.normalize_channel_name(channel)
+        counts[normalized] += 1
+        if config.slack.is_in_scope(normalized):
+            in_scope += 1
+    top_channels = [{"channel": name, "count": count} for name, count in counts.most_common(top_n)]
+    return {
+        "in_scope_count": in_scope,
+        "unknown_channel_count": unknown,
+        "top_channels": top_channels,
+    }
+
+
 def normalize_slack(
     results: list[dict[str, Any]],
     config: FlightDeckConfig,
@@ -46,7 +83,7 @@ def normalize_slack(
 ) -> list[Signal]:
     output: list[Signal] = []
     for result in results:
-        channel = str(result.get("channel_name") or "")
+        channel = _extract_slack_channel(result)
         if not channel or not config.slack.is_in_scope(channel):
             continue
 

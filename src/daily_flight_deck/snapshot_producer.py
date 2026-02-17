@@ -14,7 +14,7 @@ from typing import Any
 from .config import FlightDeckConfig, load_config
 from .dashboard_services import derive_tasks_from_signals, source_counts
 from .models import signal_to_dict
-from .normalizers import normalize_all
+from .normalizers import normalize_all, slack_raw_channel_stats
 from .scoring import score_and_sort
 from .storage import Storage
 
@@ -61,6 +61,7 @@ class SnapshotProducer:
             "calendar": len(payload.calendar_events),
             "gmail": len(payload.gmail_emails),
         }
+        slack_stats = slack_raw_channel_stats(payload.slack_results, self.config)
         signals = normalize_all(
             config=self.config,
             now=current,
@@ -79,6 +80,12 @@ class SnapshotProducer:
             metadata={
                 "fetch_mode": payload.fetch_mode,
                 "raw_counts": raw_counts,
+                "in_scope_raw_counts": {
+                    "slack": int(slack_stats.get("in_scope_count", 0)),
+                    "calendar": len(payload.calendar_events),
+                    "gmail": len(payload.gmail_emails),
+                },
+                "slack_channel_stats": slack_stats,
                 "actionable_counts": counts,
                 "diagnostics": payload.diagnostics,
                 "schedule": {"run_days": list(self.config.run_days), "run_time": self.config.run_time},
@@ -114,6 +121,8 @@ class SnapshotProducer:
             f"slack_after_date={slack_after_date}\n"
             f"calendar_time_min={calendar_time_min}\n"
             f"calendar_time_max={calendar_time_max}\n"
+            f"slack_channels_exact_csv={','.join(self.config.slack.channels_exact)}\n"
+            f"slack_channels_prefix_csv={','.join(self.config.slack.channels_prefix)}\n"
         )
         with tempfile.NamedTemporaryFile(mode="w+", suffix=".json", delete=True) as out_file:
             command = [

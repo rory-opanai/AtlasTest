@@ -276,7 +276,7 @@ def _hx_no_content() -> PlainTextResponse:
 
 def _dashboard_data(ctx: DashboardContext) -> dict[str, Any]:
     snapshot = ctx.storage.get_latest_snapshot()
-    snapshot_metadata = getattr(snapshot, "metadata", {}) if snapshot else {}
+    snapshot_metadata = (getattr(snapshot, "metadata", {}) or {}) if snapshot else {}
     latest_snapshot_id = snapshot.id if snapshot else None
     tasks = ctx.storage.list_board_tasks(latest_snapshot_id)
     grouped_tasks = group_tasks(tasks)
@@ -314,14 +314,18 @@ def _build_source_health(snapshot: Any, snapshot_metadata: dict[str, Any]) -> li
         ]
 
     raw_counts = snapshot_metadata.get("raw_counts", {})
+    in_scope_raw_counts = snapshot_metadata.get("in_scope_raw_counts", {})
     actionable_counts = snapshot.source_counts or {}
     fetch_mode = snapshot_metadata.get("fetch_mode", "unknown")
     rows: list[dict[str, Any]] = []
     for source in sources:
         raw = int(raw_counts.get(source, actionable_counts.get(source, 0)))
+        in_scope_raw = int(in_scope_raw_counts.get(source, raw))
         actionable = int(actionable_counts.get(source, 0))
         if raw == 0:
             status = "No raw items fetched"
+        elif in_scope_raw == 0 and source == "slack":
+            status = "Fetched, but none from allowlisted channels"
         elif actionable == 0:
             status = "Fetched, but none actionable in current window"
         else:
@@ -330,6 +334,7 @@ def _build_source_health(snapshot: Any, snapshot_metadata: dict[str, Any]) -> li
             {
                 "source": source,
                 "raw_count": raw,
+                "in_scope_raw_count": in_scope_raw,
                 "actionable_count": actionable,
                 "status": status,
                 "fetch_mode": fetch_mode,

@@ -102,5 +102,7 @@ runtime:
     - "gh-fix-ci"
     - "gh-address-comments"
     - "incident-report-generator"
+    - "command-center-integration-audit"
+    - "command-center-task-ops"
   skill_execution_timeout_seconds: 600
   codex_bin: "/opt/homebrew/bin/codex"

@@ -49,6 +49,8 @@ def test_snapshot_producer_stores_snapshot_and_tasks(tmp_path) -> None:
 
     latest = storage.get_latest_snapshot()
     assert latest is not None
+    assert latest.metadata["in_scope_raw_counts"]["slack"] >= 1
+    assert latest.metadata["slack_channel_stats"]["top_channels"]
     tasks = storage.list_board_tasks(latest.id)
     assert tasks
 

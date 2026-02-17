@@ -1,4 +1,7 @@
 <h2>Today’s Priority Board</h2>
+{% if not snapshot %}
+  <p class="empty">No snapshot yet. Use “Refresh Sources Now” to pull Slack, Calendar, and Gmail.</p>
+{% endif %}
 <div class="task-sections">
   {% for bucket in ["now", "next", "later"] %}
     <section class="task-section">
@@ -41,7 +44,7 @@
                     <button class="btn btn-sm btn-success" type="submit">Done</button>
                   </form>
                   {% if task.url %}
-                    <a class="btn btn-sm btn-link" href="{{ task.url }}" target="_blank" rel="noopener noreferrer">Open</a>
+                    <a class="btn btn-sm btn-link" href="{{ task.url }}" target="_blank" rel="noopener noreferrer">Open Source</a>
                   {% endif %}
                 </div>
 

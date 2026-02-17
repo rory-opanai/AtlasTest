@@ -7,15 +7,22 @@
   {% endif %}
 
   <div class="top-card primary">
-    <h3>Snapshot Status</h3>
+    <h3>Snapshot Ready</h3>
     {% if snapshot %}
-      <p class="strong">Latest snapshot: {{ snapshot.created_at.isoformat() }}</p>
-      <p>Ingestion mode: <span class="pill">{{ snapshot_metadata.get("fetch_mode", "unknown") }}</span></p>
-      <p>Run source: <span class="pill">{{ snapshot.source }}</span></p>
+      <p class="strong">{{ snapshot.created_at.isoformat() }}</p>
+      <p class="meta">Mode: <span class="pill">{{ snapshot_metadata.get("fetch_mode", "unknown") }}</span></p>
+      <p class="meta">Source: <span class="pill">{{ snapshot.source }}</span></p>
     {% else %}
       <p class="strong">No snapshot loaded yet.</p>
-      <p>Click refresh to fetch Slack, Calendar, and Gmail now.</p>
+      <p class="meta">Use refresh to fetch Slack, Calendar, and Gmail.</p>
     {% endif %}
+    <div class="counts">
+      {% if snapshot %}
+        {% for source, count in snapshot.source_counts.items() %}
+          <span>{{ source }} actionable: {{ count }}</span>
+        {% endfor %}
+      {% endif %}
+    </div>
   </div>
 
   <div class="top-card">
@@ -27,11 +34,11 @@
     {% else %}
       <button type="button" class="btn btn-disabled" disabled>Cooldown Active</button>
       {% if next_refresh_allowed %}
-        <p>Next refresh allowed: {{ next_refresh_allowed.isoformat() }}</p>
+        <p class="meta">Next refresh: {{ next_refresh_allowed.isoformat() }}</p>
       {% endif %}
     {% endif %}
     {% if last_refresh_event %}
-      <p>Last refresh: {{ last_refresh_event.kind }} / {{ last_refresh_event.status }}</p>
+      <p class="meta">Last refresh: {{ last_refresh_event.kind }} / {{ last_refresh_event.status }}</p>
       {% if last_refresh_event.status == "failed" and last_refresh_event.message %}
         <p class="error">Reason: {{ last_refresh_event.message }}</p>
       {% endif %}
@@ -40,13 +47,7 @@
 
   <div class="top-card">
     <h3>Schedule</h3>
-    <p>{{ schedule_days|join(', ') }} at {{ schedule_time }} local.</p>
-    <div class="counts">
-      {% if snapshot %}
-        {% for source, count in snapshot.source_counts.items() %}
-          <span>{{ source }} actionable: {{ count }}</span>
-        {% endfor %}
-      {% endif %}
-    </div>
+    <p class="strong">{{ schedule_days|join(', ') }} at {{ schedule_time }} local</p>
+    <p class="meta">Daily snapshot target: by 07:32 local</p>
   </div>
 </div>
